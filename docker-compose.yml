@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      # CRITICAL: We use 'db' as the hostname, not 'localhost'
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/hex_arch
+    volumes:
+      - ./src:/app/src  # Live code reloading (Optional)
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hex_arch
+    ports:
+      - "5435:5432"  # Exposed on 5435 just in case you want to check via TablePlus
